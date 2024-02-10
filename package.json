@@ -1,0 +1,12 @@
+{
+    "name": "my-app",
+    "version": "1.0.0",
+    "description": "A simple Vercel deployable app",
+    "scripts": {
+        "start": "serve public/",
+        "dev": "serve public/"
+    },
+    "devDependencies": {
+        "serve": "^14.2.1"
+    }
+}
