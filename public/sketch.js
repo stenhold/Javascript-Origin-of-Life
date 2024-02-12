@@ -11,19 +11,24 @@ let redCount = 0;
 let blueCount = 0;
 let redHistory = [];
 let blueHistory = [];
-let plotScale = 1.5;
 let interactionThreshold = 40;
 let activeSite = [];
 
+let plotScale = 0.5; // Vertical height of measurement graph
+let verticalShift = -20; // Amount to shift measurement graph upward
+
+let maxHeight; // Defining maxHeight....
+
 function setup() {
-    createCanvas(800, 1400);
-    plotCanvas = createGraphics(800, 800);
+    createCanvas(800, 450);
+    plotCanvas = createGraphics(800, 200);
+    maxHeight = height + 300; // Define bottom-border for particles!! 
     for (let j = 0; j < numChains; j++) {
         chains[j] = [];
         colors[j] = [];
         activeSite[j] = [];
         for (let i = 0; i < numMonomers; i++) {
-            chains[j][i] = createVector(random(width), random(height / 3));
+            chains[j][i] = createVector(random(width), random(maxHeight));
             colors[j][i] = (i === 0) ? color(200, 0, 0) : color(0, 0, 200);
             activeSite[j][i] = (i === 0);
         }
@@ -51,12 +56,12 @@ function draw() {
             chains[j][i].y += dy / distance * repulsionForce;
 
             chains[j][i].x = constrain(chains[j][i].x, monomerSize / 2, width - monomerSize / 2);
-            chains[j][i].y = constrain(chains[j][i].y, monomerSize / 2, height / 3 - monomerSize / 2);
+            chains[j][i].y = constrain(chains[j][i].y, monomerSize / 2, maxHeight / 3 - monomerSize / 2);
 
             chains[j][i].x += random(-1, 1);
             chains[j][i].y += random(-1, 1);
             chains[j][i].x = constrain(chains[j][i].x, monomerSize / 2, width - monomerSize / 2);
-            chains[j][i].y = constrain(chains[j][i].y, monomerSize / 2, height / 3 - monomerSize / 2);
+            chains[j][i].y = constrain(chains[j][i].y, monomerSize / 2, maxHeight / 3 - monomerSize / 2);
         }
         stroke('black');
         for (let i = 0; i < numMonomers - 1; i++) {
@@ -79,15 +84,28 @@ function draw() {
     }
     redHistory.push(redCount);
     blueHistory.push(blueCount);
-    image(plotCanvas, 0, 475);
+    image(plotCanvas, 0, 250);
     plotCanvas.background(255);
+    // Adjust the plotting for red history
     plotCanvas.stroke('red');
     for (let i = 0; i < redHistory.length - 1; i++) {
-        plotCanvas.line(i * (plotCanvas.width / redHistory.length), plotCanvas.height - redHistory[i] * plotScale, (i + 1) * (plotCanvas.width / redHistory.length), plotCanvas.height - redHistory[i + 1] * plotScale);
+        plotCanvas.line(
+            i * (plotCanvas.width / redHistory.length),
+            plotCanvas.height - (redHistory[i] * plotScale) - verticalShift, // Shifted upward
+            (i + 1) * (plotCanvas.width / redHistory.length),
+            plotCanvas.height - (redHistory[i + 1] * plotScale) - verticalShift // Shifted upward
+        );
     }
+
+    // Adjust the plotting for blue history
     plotCanvas.stroke('blue');
     for (let i = 0; i < blueHistory.length - 1; i++) {
-        plotCanvas.line(i * (plotCanvas.width / blueHistory.length), plotCanvas.height - blueHistory[i] * plotScale, (i + 1) * (plotCanvas.width / blueHistory.length), plotCanvas.height - blueHistory[i + 1] * plotScale);
+        plotCanvas.line(
+            i * (plotCanvas.width / blueHistory.length),
+            plotCanvas.height - (blueHistory[i] * plotScale) - verticalShift, // Shifted upward
+            (i + 1) * (plotCanvas.width / blueHistory.length),
+            plotCanvas.height - (blueHistory[i + 1] * plotScale) - verticalShift // Shifted upward
+        );
     }
 }
 
