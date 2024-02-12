@@ -14,15 +14,36 @@ let blueHistory = [];
 let interactionThreshold = 40;
 let activeSite = [];
 
-let plotScale = 0.5; // Vertical height of measurement graph
-let verticalShift = -20; // Amount to shift measurement graph upward
+let plotScale = 0.3; // Vertical height of measurement graph
+let verticalShift = 0; // Amount to shift measurement graph upward
 
-let maxHeight; // Defining maxHeight....
+let plotCanvasY = 250; // Hardcoded Y position of plotCanvas
+
+let maxHeight; // Defining maxHeight...
+
+let numChainsSlider; // HTML controls
 
 function setup() {
-    createCanvas(800, 450);
-    plotCanvas = createGraphics(800, 200);
-    maxHeight = height; // Define bottom-border for particles!! 
+    createCanvas(800, 500);
+    plotCanvas = createGraphics(800, 250);
+
+    setupControls(); // Set up HTML controls
+    initializeChains(); // Initialize chains at startup
+}
+
+function setupControls() {
+    // Link to the number of chains slider
+    numChainsSlider = select('#numChainsSlider');
+    numChainsSlider.input(() => {
+        numChains = parseInt(numChainsSlider.value(), 10); // Ensure numChains is an integer
+        initializeChains(); // Reinitialize the simulation with the new value
+    });
+}
+
+function initializeChains() {
+    chains = []; // Reset the chains array
+    colors = []; // Reset the colors array
+    activeSite = []; // Reset the activeSite array
     for (let j = 0; j < numChains; j++) {
         chains[j] = [];
         colors[j] = [];
@@ -34,6 +55,7 @@ function setup() {
         }
     }
 }
+
 
 function draw() {
     background(220);
@@ -87,7 +109,7 @@ function draw() {
     }
     redHistory.push(redCount);
     blueHistory.push(blueCount);
-    image(plotCanvas, 0, 250);
+    image(plotCanvas, 0, plotCanvasY);
     plotCanvas.background(255);
     // Adjust the plotting for red history
     plotCanvas.stroke('red');
