@@ -22,13 +22,13 @@ let maxHeight; // Defining maxHeight....
 function setup() {
     createCanvas(800, 450);
     plotCanvas = createGraphics(800, 200);
-    maxHeight = height + 300; // Define bottom-border for particles!! 
+    maxHeight = height; // Define bottom-border for particles!! 
     for (let j = 0; j < numChains; j++) {
         chains[j] = [];
         colors[j] = [];
         activeSite[j] = [];
         for (let i = 0; i < numMonomers; i++) {
-            chains[j][i] = createVector(random(width), random(maxHeight));
+            chains[j][i] = createVector(random(width), random(height / 2));
             colors[j][i] = (i === 0) ? color(200, 0, 0) : color(0, 0, 200);
             activeSite[j][i] = (i === 0);
         }
@@ -55,13 +55,16 @@ function draw() {
             chains[j][i].x += dx / distance * repulsionForce;
             chains[j][i].y += dy / distance * repulsionForce;
 
+            // Apply correct constraint for x and corrected y
             chains[j][i].x = constrain(chains[j][i].x, monomerSize / 2, width - monomerSize / 2);
-            chains[j][i].y = constrain(chains[j][i].y, monomerSize / 2, maxHeight / 3 - monomerSize / 2);
+            chains[j][i].y = constrain(chains[j][i].y, monomerSize / 2, height / 2 - monomerSize / 2);
 
             chains[j][i].x += random(-1, 1);
             chains[j][i].y += random(-1, 1);
+
+            // The correct constraint for x remains the same; y constraint is now consistent with the setup
             chains[j][i].x = constrain(chains[j][i].x, monomerSize / 2, width - monomerSize / 2);
-            chains[j][i].y = constrain(chains[j][i].y, monomerSize / 2, maxHeight / 3 - monomerSize / 2);
+            chains[j][i].y = constrain(chains[j][i].y, monomerSize / 2, height / 2 - monomerSize / 2);
         }
         stroke('black');
         for (let i = 0; i < numMonomers - 1; i++) {
